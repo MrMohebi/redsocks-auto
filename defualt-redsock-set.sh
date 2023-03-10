@@ -16,7 +16,7 @@ function action_up()
   iptables -t nat -A REDSOCKS -d 224.0.0.0/4 -j RETURN
   iptables -t nat -A REDSOCKS -d 240.0.0.0/4 -j RETURN
 
-  iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
+  iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 12355
 
   # Redirect all HTTP and HTTPS outgoing packets through Redsocks
   iptables -t nat -A OUTPUT -p tcp --dport 443 -j REDSOCKS
@@ -43,7 +43,7 @@ function action_up()
       // Local IP listen to
       local_ip = 0.0.0.0;
       // Port to listen to
-      local_port = 12345;
+      local_port = 12355;
       // Remote proxy address
       ip = 127.0.0.1;
       port = 1080;
@@ -63,8 +63,7 @@ function action_up()
 
 function action_down()
 {
-  iptables -v -t nat -D OUTPUT -p tcp -j REDSOCKS
-
+  iptables -v -F REDSOCKS
   iptables -v -F REDSOCKS -t nat
   iptables -v -X REDSOCKS -t nat
 
