@@ -25,6 +25,40 @@ function action_up()
   iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDSOCKS
   iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDSOCKS
   iptables -t nat -A PREROUTING -p tcp --dport 1080 -j REDSOCKS
+
+
+
+  mv /etc/redsocks.conf /etc/redsocks.conf.back
+
+
+  cat <<< '
+  base {
+   log_debug = on;
+   log_info = on;
+   log = "stderr";
+   daemon = on;
+   redirector = iptables;
+  }
+  redsocks {
+      // Local IP listen to
+      local_ip = 0.0.0.0;
+      // Port to listen to
+      local_port = 12345;
+      // Remote proxy address
+      ip = 127.0.0.1;
+      port = 1080;
+      // Proxy type
+      type = socks5;
+      // Username to authorize on proxy server
+      // login = anonymous;
+      // Password for a proxy user
+      // password = verystrongpassword;
+      // Do not disclose real IP
+      disclose_src = false;
+  }
+  ' > /etc/redsocks.conf
+
+  redsocks -c /etc/redsocks.conf
 }
 
 function action_down()
@@ -33,6 +67,8 @@ function action_down()
 
   iptables -v -F REDSOCKS -t nat
   iptables -v -X REDSOCKS -t nat
+
+  mv /etc/redsocks.conf.back /etc/redsocks.conf
 }
 
 
