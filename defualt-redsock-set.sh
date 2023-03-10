@@ -63,9 +63,8 @@ function action_up()
 
 function action_down()
 {
-  iptables -v -F REDSOCKS
-  iptables -v -F REDSOCKS -t nat
-  iptables -v -X REDSOCKS -t nat
+  iptables -v -F
+  iptables -v -F -t nat
 
   mv /etc/redsocks.conf.back /etc/redsocks.conf
 }
