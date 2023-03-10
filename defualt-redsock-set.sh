@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+AP_SUBNET_IFACE=enp1s2
+AP_SUBNET_RANGE="192.168.12.0/24"
 
 function action_up()
 {
@@ -22,11 +24,10 @@ function action_up()
   iptables -t nat -A OUTPUT -p tcp --dport 443 -j REDSOCKS
   iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDSOCKS
 
+  # For redirecting incoming packets to the REDSOCKS chain.
   iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDSOCKS
   iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDSOCKS
   iptables -t nat -A PREROUTING -p tcp --dport 1080 -j REDSOCKS
-
-
 
   mv /etc/redsocks.conf /etc/redsocks.conf.back
 
